@@ -1,0 +1,42 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master    #触发指令的库中分支
+
+jobs: 
+- job: Windows
+  pool:
+    name: Home Pool   #为本地代理服务器的名字，要与个人配置一致
+    demands:
+    - cmake
+
+  steps:
+
+  - task: CMake@1      #此处为CMake命令行指令
+    displayName: 'CMake '
+    inputs:
+      #workingDirectory: 'build' #Optional
+      cmakeArgs: '-G "Visual Studio 15 2017" -A x64 ..'  
+      #设置环境和模式为vs2017，x64(需要与gtest配置匹配，也可以为vs2015，x86等等)
+
+  - task: CMake@1        
+    displayName: 'CMake --build . --config Debug'
+    inputs: 
+     cmakeArgs: '--build . --config Debug'
+      #执行构建，设定为debug模式
+
+  - task: PowerShell@2  #此处为PowerShell命令行指令
+    inputs:
+     targetType: 'inline'
+     script: |
+      # Write your PowerShell commands here.
+      
+      $(system.defaultWorkingDirectory)\build\Debug\mygtest.exe get-process > results.txt
+      $(system.defaultWorkingDirectory)\build\Debug\mygtest.exe
+      exit
+      #直接将要执行的命令左对齐写在下面，注意最后要exit退出，否则报错。
+      #此处运行了产生的.exe测试文件，注意文件名和路径要根据具体情况修改
+
