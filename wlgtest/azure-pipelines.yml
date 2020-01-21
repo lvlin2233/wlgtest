@@ -9,7 +9,7 @@ trigger:
 jobs: 
 - job: Windows
   pool:
-    name: mytest   #为本地代理服务器的名字，要与个人配置一致
+    name: Home   #为本地代理服务器的名字，要与个人配置一致
     demands:
     - cmake
 
